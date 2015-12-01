@@ -35,9 +35,7 @@ public class GameLoop implements Runnable {
             }
         } catch(InterruptedException e) {
             System.out.println("game ended");
-        } /*finally {
-            this.clear();
-        }*/
+        }
     }
     
     private void checkCollision(GameObject o1, GameObject o2) {
@@ -48,50 +46,6 @@ public class GameLoop implements Runnable {
         }
     }
     
-    /*
-    private void checkCollision(GameObject o1, GameObject o2) {
-        double distance = Math.sqrt( ((o1.getX()-o2.getX())*((o1.getX()-o2.getX()))) + 
-                ((o1.getY()-o2.getY())*((o1.getY()-o2.getY()))));
-        if(distance <= o1.getSize()+o2.getSize()) {
-            if(o1 instanceof PlayerObject && o2 instanceof PlayerObject) {
-                this.performPlayersTouch((PlayerObject)o1, (PlayerObject)o2);
-                return;
-            }
-            if(o1 instanceof PlayerObject) {
-                if(o2 instanceof HurtingObject) {
-                    this.hurtPlayer((PlayerObject)o1, (HurtingObject)o2);
-                } else {
-                    this.collectBonus((PlayerObject)o1, (Bonus)o2);
-                }
-            }else if(o2 instanceof PlayerObject) {
-                if(o1 instanceof HurtingObject) {
-                    this.hurtPlayer((PlayerObject)o2, (HurtingObject)o1);
-                } else {
-                    this.collectBonus((PlayerObject)o2, (Bonus)o1);
-                }
-            }
-        }
-    }
-    
-    private void performPlayersTouch(PlayerObject p1, PlayerObject p2) {
-        System.out.println(p1 +" touches "+ p2);
-    }
-    
-    private void hurtPlayer(PlayerObject player, HurtingObject hurtingObject) {
-        //...
-    }
-    
-    private void collectBonus(PlayerObject collector, Bonus bonus) {
-        if(collector.getBonus() != null && collector.getBonus().getThread() != null) {
-            collector.getBonus().getThread().interrupt();
-        }
-        collector.setBonus(bonus);
-    }
-    
-    private void clear() {
-        
-    }
-    */
     public static GameLoop getInstance() {
         if(GameLoop.gameLoop == null) {
             GameLoop.gameLoop = new GameLoop();
