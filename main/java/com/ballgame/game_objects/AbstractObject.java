@@ -15,6 +15,7 @@ public abstract class AbstractObject implements GameObject {
     protected int size = 20 ;
     protected String color;
     protected boolean  changed = false;
+    protected boolean toBeRemoved = false;
 
     @Override
     public synchronized double getX() {
@@ -66,6 +67,15 @@ public abstract class AbstractObject implements GameObject {
     @Override
     public synchronized void setChanged(boolean changed) {
         this.changed = changed;
+    }
+    
+    public synchronized void prepareToRemove() {
+        this.toBeRemoved = true;
+        this.setChanged(true);
+    }
+
+    public boolean isToBeRemoved() {
+        return toBeRemoved;
     }
     
     @Override

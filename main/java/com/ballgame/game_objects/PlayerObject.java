@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Random;
 import org.json.JSONObject;
 import com.ballgame.bonuses.Bonus;
+import com.ballgame.game.SpeedBuster;
 import com.ballgame.objects.Vector;
 
 public class PlayerObject extends AbstractObject {
@@ -33,6 +34,7 @@ public class PlayerObject extends AbstractObject {
     private int shield = 0;
     private int hp = 10;
     private Bonus bonus = null;
+    private final SpeedBuster speedBuster = new SpeedBuster(this);
     //private PlayersCollisionHandler playersCollisionHandler = null;
     
     public PlayerObject(int userId) {
@@ -64,8 +66,8 @@ public class PlayerObject extends AbstractObject {
     
     @Override
     public void update() {
-        this.setX(this.getX()+this.getSpeed()*Math.sin(this.getVector().getAngle()));
-        this.setY(this.getY()-this.getSpeed()*Math.cos(this.getVector().getAngle()));
+        this.setX(this.getX()+this.getVector().getX());//this.getSpeed()*Math.sin(this.getVector().getAngle()));
+        this.setY(this.getY()+this.getVector().getY());//this.getSpeed()*Math.cos(this.getVector().getAngle()));
         this.checkRicochet();
         this.changed = true;
     }
@@ -86,15 +88,15 @@ public class PlayerObject extends AbstractObject {
             this.setY(this.getSize());
         }
     }
-    
-    public synchronized int getSpeed() {
+    /*
+    public synchronized double getSpeed() {
         return this.getVector().getSpeed();
     }
 
-    public synchronized void setSpeed(int speed) {
+    public synchronized void setSpeed(double speed) {
         this.getVector().setSpeed(speed);
     }
-
+    */
     public synchronized boolean isGhost() {
         return ghost;
     }
@@ -128,18 +130,28 @@ public class PlayerObject extends AbstractObject {
             ob.put("size", this.getSize());
         }
         /*
+        if( !Double.toString(this.getVector().getX()).equals(this.cacheMap.get("vectorX")) ) {
+            this.cacheMap.put("vectorX", this.getVector().getX()+"");
+            ob.put("vectorX", this.getVector().getX());
+        }
+        if( !Double.toString(this.getVector().getY()).equals(this.cacheMap.get("vectorY")) ) {
+            this.cacheMap.put("vectorY", this.getVector().getY()+"");
+            ob.put("vectorY", this.getVector().getY());
+        }
+        */
+        
         if( !Integer.toString(this.getShield()).equals(this.cacheMap.get("shield")) ) {
             this.cacheMap.put("shield", this.getShield()+"");
-            ob.put("size", this.getShield());
+            ob.put("shield", this.getShield());
         }
         if( !Integer.toString(this.getHp()).equals(this.cacheMap.get("hp")) ) {
             this.cacheMap.put("hp", this.getHp()+"");
             ob.put("hp", this.getHp());
         }
-        if( this.getBonus()!=null && this.getBonus().getTitle().equals(this.cacheMap.get("bonus")) ) {
+        if( this.getBonus()!=null && !this.getBonus().getTitle().equals(this.cacheMap.get("bonus")) ) {
             this.cacheMap.put("bonus", this.getBonus().getTitle());
             ob.put("bonus", this.getBonus().getTitle());
-        }*/
+        }
         return ob;
     }
     
@@ -152,15 +164,21 @@ public class PlayerObject extends AbstractObject {
         ob.put("y", this.getY());
         ob.put("angle", this.getVector().getAngle());
         ob.put("size", this.getSize());
+        
+        ob.put("shield", this.getShield());
+        ob.put("hp", this.getHp());
+        ob.put("bonus", this.getBonus());
+        /*ob.put("vectorX", this.getVector().getX());
+        ob.put("vectorY", this.getVector().getY());*/
         return ob;
     }
     
     public synchronized void increaseAngle() {
-        this.getVector().setAngle(this.getVector().getAngle()+.1);
+        this.getVector().setAngle(this.getVector().getAngle()-.1);
     }
     
     public synchronized void decreaseAngle() {
-        this.getVector().setAngle(this.getVector().getAngle()-.1);
+        this.getVector().setAngle(this.getVector().getAngle()+.1);
     }
     
     public synchronized void increaseSize() {
@@ -168,9 +186,9 @@ public class PlayerObject extends AbstractObject {
     }
     
     public synchronized void increaseSpeed() {
-        this.setSpeed(this.getSpeed()+1);
+        this.getVector().setSpeed(this.getVector().getSpeed()+1);
     }
-
+    
     public Bonus getBonus() {
         return bonus;
     }
@@ -203,4 +221,8 @@ public class PlayerObject extends AbstractObject {
         this.playersCollisionHandler = p;
     }
 */
+
+    public synchronized SpeedBuster getSpeedBuster() {
+        return speedBuster;
+    }
 }

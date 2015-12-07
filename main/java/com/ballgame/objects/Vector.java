@@ -2,11 +2,11 @@ package com.ballgame.objects;
 
 public class Vector {
     
-    private static final int MAX_SPEED = 10;
+    private static final int MAX_SPEED = 15;
     
     private double x;
     private double y;
-    private int speed;
+    private double speed;
     private double angle;
 
     public Vector(double x, double y) {
@@ -64,11 +64,11 @@ public class Vector {
         this.updateXY();
     }
     
-    public synchronized int getSpeed() {
+    public synchronized double getSpeed() {
         return this.speed;
     }
     
-    public synchronized void setSpeed(int speed) {
+    public synchronized void setSpeed(double speed) {
         this.speed = speed;
         this.speed = Math.min(speed, Vector.MAX_SPEED);
         this.speed = Math.max(this.speed, 1);
@@ -112,6 +112,12 @@ public class Vector {
         d = i;
         d /= places;
         return d;
+    }
+    
+    public static Vector combineVectors(Vector v1, Vector v2) {
+        Vector v = new Vector(v1.getX(), v1.getY());
+        v.combineWith(v2);
+        return v;
     }
     
 }

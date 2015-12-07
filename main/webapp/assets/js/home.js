@@ -42,7 +42,7 @@ $(document).ready(function(){
             }
         }
         if( typeof gameObjects[id] !== "undefined" ) {
-            gameObjects[id] = null;
+            delete gameObjects[id];
         }
         updateUsers();
     }
@@ -173,14 +173,14 @@ $(document).ready(function(){
                 for( var i in data ) {
                     var id = data[i]['id'];
                     //write(data[i]);
-                    if( typeof gameObjects[id] === 'undefined' ) {
+                    if( typeof gameObjects[id] === 'undefined' || gameObjects[id]===null ) {
                         gameObjects[id] = {};
                     }
                     for( var key in data[i] ) {
                         gameObjects[id][key] = data[i][key];
                     }
                 }
-                write(gameObjects);
+                //write(gameObjects);
                 break;
             default:
                 write("unrecognized data: " + data);
@@ -383,7 +383,7 @@ $(document).ready(function(){
         canvas.width = 800;
         canvas.height = 600;
         ctx = canvas.getContext("2d");
-        refreshCanvas();
+        //refreshCanvas();
     }
     /*
     objects[objects.length] = {
@@ -404,11 +404,20 @@ $(document).ready(function(){
     };
     */
     function refreshCanvas() {
+        ctx.fillStyle = "#666666";
         ctx.clearRect(0,0,800,600);
         ctx.font = "20px Courier New";
         ctx.strokeStyle = '#003300';
+        //console.log(gameObjects);
         for( var i in gameObjects ) {
-            if( gameObjects[i] === null ) {
+            if( typeof gameObjects[i] === 'undefined' || gameObjects[i] === null ) {
+                continue;
+            }
+            var remove = gameObjects[i]['remove'];
+            if(remove === 'remove') {
+                console.log(gameObjects[i]);
+                gameObjects[i]["size"]=0;
+                delete gameObjects[i];
                 continue;
             }
             var x = gameObjects[i]['x'];
@@ -417,21 +426,44 @@ $(document).ready(function(){
             //var shield = gameObjects[i]['shield'];
             //var shape = gameObjects[i]['shape'];
             var color = gameObjects[i]['color'];
-            /*
+            /*var vectorX = gameObjects[i]['vectorX'];
+            var vectorY = gameObjects[i]['vectorY'];
+            */
+           
+            var info = gameObjects[i]['info'];
             var hp = gameObjects[i]['hp'];
             var shield = gameObjects[i]['shield'];
             var bonus = gameObjects[i]['bonus'];
-            */
+            
             ctx.beginPath();
             ctx.lineWidth = 1;
             ctx.fillStyle = color;
+            //write(x +","+ y + "," + size + "," + hp + "," + bonus + "," + shield);
             ctx.arc(x, y, size, 0, 2*Math.PI, false);
             ctx.fill();
             ctx.stroke();
-            /*ctx.strokeText("HP:["+hp+"]",x-size,y-70);
+            /*
+            ctx.beginPath();
+            ctx.moveTo(x,y);
+            ctx.lineTo(x+10*vectorX,y+10*vectorY);
+            ctx.stroke();*/
+            var titles = {
+                "INFO":info,
+                "HP":hp,
+                "SHIELD":shield,
+                "BONUS":bonus
+            };
+            var counter = 0;
+            for(var j in titles) {
+                if(typeof titles[j] !== 'undefined') {
+                    ctx.strokeText(j+":["+titles[j]+"]",x-size*2,y-30-20*counter);
+                    ++counter;
+                }
+            }
+            /*
+            ctx.strokeText("HP:["+hp+"]",x-size,y-70);
             ctx.strokeText("BONUS:["+bonus+"]",x-size,y-50);
             ctx.strokeText("SHIELD:["+shield+"]",x-size,y-30);
-            ctx.stroke();*/
            // ctx.beginPath();
             //ctx.font = "10px Courier New";
             //ctx.fillStyle = '#003300';

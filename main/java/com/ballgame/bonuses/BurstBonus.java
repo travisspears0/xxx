@@ -7,14 +7,13 @@ import java.util.concurrent.TimeUnit;
 public class BurstBonus implements Bonus {
 
     private final int secondsDuration;
-    private final int value;
+    private final double newSpeed;
     private PlayerObject playerObject;
     private Thread thread = null;
     
-    public BurstBonus(int secondsDuration, int value) {
+    public BurstBonus(int secondsDuration, double newSpeed) {
         this.secondsDuration = secondsDuration;
-        this.value = value;
-        
+        this.newSpeed = newSpeed;
     }
     
     @Override
@@ -22,14 +21,17 @@ public class BurstBonus implements Bonus {
         this.thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                double previousSpeed = BurstBonus.this.playerObject.getVector().getSpeed();
                 try {
-                    playerObject.setSpeed(playerObject.getSpeed()+value);
+                    playerObject.getVector().setSpeed(BurstBonus.this.newSpeed);
                     TimeUnit.SECONDS.sleep(BurstBonus.this.secondsDuration);
                 } catch(InterruptedException e) {
                 } finally {
                     if(playerObject != null) {
-                        playerObject.setSpeed(playerObject.getSpeed()-value);
-                        playerObject.setBonus(null);
+                        playerObject.getVector().setSpeed(previousSpeed);
+                        if(BurstBonus.this.playerObject.getBonus() == BurstBonus.this) {
+                            playerObject.setBonus(null);
+                        }
                     }
                 }
             }

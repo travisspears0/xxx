@@ -59,17 +59,21 @@ public class Game {
     @OnClose
     public void onClose(Session session) {
         this.log("closed connecion: " + session.getId());
-        User userToRemove = Game.users.get(session);
-        Game.users.remove(session);
-        Game.dataHandlerManager.handleRemoveUserData(userToRemove.getId());
-        Game.usersMediator.removeUser(userToRemove);
-        Game.gameManager.removeUser(userToRemove);
+        Game.removeUser(session);
     }
     
     @OnError
     public void onError(Throwable error) {
         this.log("error: " + error.getMessage());
         error.printStackTrace();
+    }
+    
+    public static void removeUser(Session session) {
+        User userToRemove = Game.users.get(session);
+        Game.users.remove(session);
+        Game.dataHandlerManager.handleRemoveUserData(userToRemove.getId());
+        Game.usersMediator.removeUser(userToRemove);
+        Game.gameManager.removeUser(userToRemove);
     }
     
     private void log(String info) {

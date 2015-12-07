@@ -3,6 +3,7 @@ package com.ballgame.game;
 import com.ballgame.game_objects.GameObject;
 import com.ballgame.game_objects.PlayerObject;
 import com.ballgame.objects.User;
+import com.ballgame.servers.Game;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,13 +55,18 @@ public class GameManager {
             try {
                 user.getSession().getBasicRemote().sendText(objectToSend.toString());
             } catch(IOException | IllegalStateException e) {
+                Game.removeUser(user.getSession());
                 System.out.println("could not send game data to user " + user.getName());
             }
         }
     }
     
-    public void addGameObject(GameObject object) {
+    public synchronized void addGameObject(GameObject object) {
         this.gameObjects.add(object);
+    }
+    
+    public synchronized void removeGameObject(GameObject ob) {
+        this.gameObjects.remove(ob);
     }
     
     public boolean addUser(User user) {
@@ -118,9 +124,13 @@ public class GameManager {
         }
     }
 
-    public List<GameObject> getGameObjects() {
+    public synchronized List<GameObject> getGameObjects() {
         List<GameObject> copy = new ArrayList<>(this.gameObjects);
         return copy;
+    }
+    
+    public synchronized void clearGameObjects() {
+        this.gameObjects.clear();
     }
     
     public JSONObject getGameObjectsData() {

@@ -13,14 +13,18 @@ public class GameLoop implements Runnable {
     
     private static GameLoop gameLoop;
     private final GameObjectsCollisionHandler gameObjectsCollisionHandler;
+    private final BonusGenerator bonusGenerator;
     
     private GameLoop() {
         this.gameObjectsCollisionHandler = GameObjectsCollisionHandler.getInstance();
+        this.bonusGenerator = new BonusGenerator();
     }
     
     @Override
     public void run() {
         Random r = new Random();
+        Thread bonusGeneratorThread = new Thread(this.bonusGenerator);
+        bonusGeneratorThread.start();
         try {
             while( !Thread.interrupted() ) {
                 for( int i=0 ; i<Game.getGameManager().getGameObjects().size() ; ++i ) {
@@ -35,6 +39,8 @@ public class GameLoop implements Runnable {
             }
         } catch(InterruptedException e) {
             System.out.println("game ended");
+            this.bonusGenerator.clearBonusCounter();
+            bonusGeneratorThread.interrupt();
         }
     }
     

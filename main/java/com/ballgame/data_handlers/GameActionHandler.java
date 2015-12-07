@@ -15,7 +15,11 @@ public class GameActionHandler {
                 break;
             }
             case "action": {
-                caller.getPlayerObject().getBonus().action();
+                if(caller.getPlayerObject().getBonus() != null) {
+                    caller.getPlayerObject().getBonus().action();
+                } else {
+                    caller.getPlayerObject().increaseSpeed();
+                }
                 break;
             }
             default: {

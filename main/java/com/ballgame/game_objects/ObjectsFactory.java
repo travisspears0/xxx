@@ -4,6 +4,7 @@ import com.ballgame.bonuses.BladeBonus;
 import com.ballgame.bonuses.Bonus;
 import com.ballgame.bonuses.BurstBonus;
 import com.ballgame.bonuses.ShieldBonus;
+import com.ballgame.game.BonusGenerator;
 import java.util.Random;
 
 public class ObjectsFactory {
@@ -18,7 +19,7 @@ public class ObjectsFactory {
         return h;
     }
     
-    public BonusObject getBonusObject(int x, int y) {
+    public BonusObject getBonusObject(double x, double y, BonusGenerator generator) {
         Bonus randomBonus = null;
         switch(random.nextInt(COUNT_BONUSES)) {
             case 0: {
@@ -37,7 +38,7 @@ public class ObjectsFactory {
                 throw new IndexOutOfBoundsException("there are not so many bonus types");
             }
         }
-        return new BonusObject(randomBonus, x, y);
+        return new BonusObject(randomBonus, x, y, generator);
     }
     
 }
